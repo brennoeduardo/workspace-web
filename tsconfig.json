@@ -1,0 +1,14 @@
+{
+  "extends": "./.nuxt/tsconfig.json",
+  "compilerOptions": {
+    "types": [
+      "vuetify",
+      "@nuxt/types"
+    ],
+  },
+  "includes": [
+    "@types/**/*.d.ts",
+    "src/**/*.ts",
+    "src/**/*.vue"
+  ]
+}
