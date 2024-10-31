@@ -3,6 +3,7 @@
         <v-row no-gutters class="pa-3" justify="center">
             <v-col cols="12">
 
+
                 <v-card-title class="text-center">
                     {{ show.register ? 'Cadastro' : 'Entrar' }}
                 </v-card-title>
@@ -20,9 +21,9 @@
                     <v-text-field v-if="show.register" v-model="confirmPassword" label="Confirme sua senha"
                         prepend-inner-icon="mdi-lock" type="password" color="teal" :rules="[confirmPasswordRule]" />
 
-                    <v-card-text class="text-end mt-1">
-                        <a href="#" v-if="!show.register">Esqueceu sua senha?</a>
-                    </v-card-text>
+                    <!-- <v-card-text class="text-end mt-1" v-if="!show.register">
+                        Esqueceu sua senha?
+                    </v-card-text> -->
                 </v-form>
 
                 <v-btn width="100%" color="teal" class="text-uppercase mt-4" :disabled="!isValid || isLoading"
@@ -30,10 +31,8 @@
                     {{ show.register ? 'Cadastrar' : 'Entrar' }}
                 </v-btn>
 
-                <v-card-text class="text-center mt-4">
-                    <a @click="toggleRegister">
-                        {{ show.register ? 'Já tenho uma conta' : 'Cadastrar-se' }}
-                    </a>
+                <v-card-text class="text-center mt-4 text-click" @click="toggleRegister">
+                    {{ show.register ? 'Já tenho uma conta' : 'Cadastrar-se' }}
                 </v-card-text>
             </v-col>
         </v-row>
@@ -72,6 +71,8 @@ import { UserAPI } from '~/server/user/user';
 import { AuthAPI } from '~/server/user/auth';
 
 const { $toast } = useNuxtApp();
+
+const router = useRouter();
 
 const show = reactive({
     register: false,
@@ -144,6 +145,9 @@ async function login() {
 
         $toast.success('Login realizado com sucesso');
         localStorage.setItem('token', token);
+        localStorage.setItem('user', JSON.stringify(decodedToken.user));
+
+        router.push('/home');
 
     } catch (error) {
         $toast.error('Erro ao logar usuário');
@@ -209,4 +213,9 @@ a {
 a:hover {
     text-decoration: underline;
 }
+
+.text-click {
+    cursor: pointer;
+}
+
 </style>
