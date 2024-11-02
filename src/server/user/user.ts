@@ -8,8 +8,16 @@ export class UserApi {
         return await post('user', data);
     }
 
-    async update(id: number): Promise<any> {
-        return await put(`user/${id}`, id);
+    async update(id: number, body: any): Promise<any> {
+        return await put(`user/${id}`, body);
+    }
+
+    async updateAvatar(id: number, body: any): Promise<any> {
+        return await put(`user/avatar/${id}`, body);
+    }
+
+    async getAvatar(id: number): Promise<any> {
+        return await get(`user/avatar/${id}`);
     }
 
 }

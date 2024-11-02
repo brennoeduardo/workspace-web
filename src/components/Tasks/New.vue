@@ -10,12 +10,12 @@
             >
                 <template #append-inner>
                     <v-btn 
-                        v-for="(action, index) in actionsAppendInner" 
-                        :key="action.icon" 
                         icon 
-                        variant="plain" 
                         v-if="typing"
+                        variant="plain" 
+                        :key="action.icon" 
                         @click="selectButton(index)" 
+                        v-for="(action, index) in actionsAppendInner" 
                         :class="{ 'selected': selectedActionIndex === index }" 
                     >
                         <v-icon>{{ action.icon }}</v-icon>

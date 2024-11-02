@@ -1,5 +1,5 @@
 import { useRouter } from 'vue-router';
-import { AuthAPI } from '~/server/user/auth';
+import { AuthAPI } from '~/server/User/auth';
 
 export const useUserAuth = () => {
     const router = useRouter();
@@ -8,14 +8,10 @@ export const useUserAuth = () => {
         try {
             const response = await AuthAPI.authenticate();
 
-            if (response.authenticated) {
-                return response;
-            } else {
-                redirectToHome();
-                return null;
-            }
+            if (response.authenticated) return response;
+            else redirectToHome();
+
         } catch (error) {
-            console.error('Error checking authentication:', error);
             redirectToHome();
             return null;
         }
@@ -23,9 +19,8 @@ export const useUserAuth = () => {
 
     const redirectToHome = () => {
         router.push('/');
+        return null
     };
 
-    return {
-        checkAuthentication,
-    };
+    return { checkAuthentication };
 };

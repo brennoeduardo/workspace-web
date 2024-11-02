@@ -13,6 +13,10 @@ class AuthApi {
         return await get('auth/check');
     }
 
+    async logout(): Promise<any> {
+        return await get('auth/logout');
+    }
+
 }
 
 export const AuthAPI = new AuthApi()

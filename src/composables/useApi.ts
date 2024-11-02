@@ -43,11 +43,17 @@ export const post = async <T>(url: string, body: unknown): Promise<T> => {
 };
 
 export const put = async <T>(url: string, body: unknown): Promise<T> => {
-    return request<T>(url, {
+    const options: RequestOptions = {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
-    });
+        body: body ,
+    };
+
+    if (!(body instanceof FormData)) {
+        options.headers = { 'Content-Type': 'application/json' };
+        options.body = JSON.stringify(body);
+    }
+
+    return request<T>(url, options);
 };
 
 export const remove = async <T>(url: string): Promise<T> => {

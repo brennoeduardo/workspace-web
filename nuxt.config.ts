@@ -10,7 +10,6 @@ export default defineNuxtConfig({
 
   srcDir: "src/",
   css: ["@/assets/css/main.scss"],
-  modules: ["nuxt-electron"],
 
   build: {
     transpile: ["vuetify"],
@@ -24,23 +23,16 @@ export default defineNuxtConfig({
 
   vite: {
     define: {
-      'process.env.DEBUG': false
+      'process.env.DEBUG': false,
     }
-  },
-
-  electron: {
-    build: [
-      {
-        entry: 'electron/main.ts',
-      },
-    ],
   },
 
   runtimeConfig: {
     public: {
-      API_URL: process.env.API_URL
+      API_URL: process.env.API_URL,
+      OPENWEATHERMAP_API_KEY: process.env.OPENWEATHERMAP_API_KEY
     }
   },
 
-  compatibilityDate: "2024-10-19",
+  compatibilityDate: "2024-11-02",
 });

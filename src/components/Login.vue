@@ -16,7 +16,7 @@
                         color="teal" :rules="[requiredRule, emailRule]" />
 
                     <v-text-field v-model="user.password" label="Senha" prepend-inner-icon="mdi-lock" type="password"
-                        color="teal" :rules="[requiredRule, passwordRule]" />
+                        color="teal" :rules="[requiredRule, passwordRule]" @keypress.enter="login" />
 
                     <v-text-field v-if="show.register" v-model="confirmPassword" label="Confirme sua senha"
                         prepend-inner-icon="mdi-lock" type="password" color="teal" :rules="[confirmPasswordRule]" />
@@ -67,8 +67,8 @@
 <script lang="ts" setup>
 import { ref, reactive } from 'vue';
 import { useNuxtApp } from '#app';
-import { UserAPI } from '~/server/user/user';
-import { AuthAPI } from '~/server/user/auth';
+import { UserAPI } from '~/server/User/user';
+import { AuthAPI } from '~/server/User/auth';
 
 const { $toast } = useNuxtApp();
 
@@ -197,6 +197,8 @@ const { checkAuthentication } = useUserAuth();
 
 onBeforeMount(async () => {
     const user = await checkAuthentication();
+
+    console.log(user)
 
     if (user) router.push('/home');
 });
