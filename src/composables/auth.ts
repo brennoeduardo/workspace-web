@@ -1,15 +1,31 @@
-export const userAuth = () => {
-    try {
+import { useRouter } from 'vue-router';
+import { AuthAPI } from '~/server/user/auth';
 
-        const getUser = localStorage.getItem('user')
-        const user = getUser ? JSON.parse(getUser) : null
+export const useUserAuth = () => {
+    const router = useRouter();
 
-        if (!user) return null
+    const checkAuthentication = async () => {
+        try {
+            const response = await AuthAPI.authenticate();
 
-        return { id: user.id, name: user.name, email: user.email }
+            if (response.authenticated) {
+                return response;
+            } else {
+                redirectToHome();
+                return null;
+            }
+        } catch (error) {
+            console.error('Error checking authentication:', error);
+            redirectToHome();
+            return null;
+        }
+    };
 
-    } catch (error) {
-        console.error(error);
-        return null;
-    }
-}
+    const redirectToHome = () => {
+        router.push('/');
+    };
+
+    return {
+        checkAuthentication,
+    };
+};

@@ -131,12 +131,11 @@ async function register() {
 
 async function login() {
     try {
+        const response = await AuthAPI.login(user);
 
-        const { token } = await AuthAPI.login(user);
+        if (!response.success) return $toast.error(response.message || 'Erro ao fazer login');
 
-        if (!token) return $toast.error('Token não recebido');
-
-        const decodedToken = decode(token);
+        const decodedToken = decode(response.token);
 
         if (!decodedToken.confirmed) {
             show.confirmation = true;
@@ -144,9 +143,7 @@ async function login() {
         }
 
         $toast.success('Login realizado com sucesso');
-        localStorage.setItem('token', token);
-        localStorage.setItem('user', JSON.stringify(decodedToken.user));
-
+        localStorage.setItem('user', JSON.stringify(decodedToken.user));  
         router.push('/home');
 
     } catch (error) {
@@ -195,6 +192,14 @@ function resetForm() {
     user.confirmation_code = '';
     confirmPassword.value = '';
 }
+
+const { checkAuthentication } = useUserAuth();
+
+onBeforeMount(async () => {
+    const user = await checkAuthentication();
+
+    if (user) router.push('/home');
+});
 
 </script>
 

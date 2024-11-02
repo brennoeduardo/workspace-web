@@ -12,7 +12,10 @@ const callBackURL = $config.public.API_URL || 'http://localhost:8000/api';
 const request = async <T>(url: string, options: RequestOptions): Promise<T> => {
     try {
         const fullURL = `${callBackURL}/${url}`;
-        const response = await fetch(fullURL, options);
+        const response = await fetch(fullURL, {
+            ...options,
+            credentials: 'include',
+        });
 
         if (!response.ok) {
             const errorData = await response.json();

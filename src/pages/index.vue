@@ -8,17 +8,13 @@
 <script lang="ts" setup>
 
 definePageMeta({
-    layout: 'default'
+    layout: 'login'
 })
-
 
 </script>
 <style scoped>
-
-.main{
+.main {
     width: 100dvw;
     height: 100dvh;
 }
-
-
 </style>
