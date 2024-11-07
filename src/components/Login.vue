@@ -143,7 +143,8 @@ async function login() {
         }
 
         $toast.success('Login realizado com sucesso');
-        localStorage.setItem('user', JSON.stringify(decodedToken.user));  
+
+        localStorage.setItem('user', JSON.stringify(decodedToken));  
         router.push('/home');
 
     } catch (error) {

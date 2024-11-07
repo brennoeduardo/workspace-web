@@ -17,10 +17,24 @@ export const useUserAuth = () => {
         }
     };
 
+    const authenticatedUser = async (): Promise<{ user: IUser; authenticated: boolean } | null> => {
+        try {
+
+            const { user, authenticated } = await AuthAPI.authenticate();
+
+            if (authenticated) return { user, authenticated };
+            else return null;
+
+        } catch (error) {
+            return null;
+        }
+    }
+
+
     const redirectToHome = () => {
         router.push('/');
         return null
     };
 
-    return { checkAuthentication };
+    return { checkAuthentication, authenticatedUser };
 };

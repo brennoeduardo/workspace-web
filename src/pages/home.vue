@@ -1,14 +1,16 @@
 <template>
-        <climate />
-        
-        <div class="d-flex justify-center flex-column align-center container-welcome">
-            <div class="welcome-message ">
-                {{ welcome }}
-            </div>
-
-            <tasks-new />
-
+    
+    <div class="d-flex justify-center flex-column align-center container-welcome">
+        <div class="welcome-message ">
+            {{ welcome }}
         </div>
+        
+        <tasks-new />
+        
+    </div>
+
+    
+    <climate />
 
 
 </template>
@@ -52,12 +54,5 @@ const welcome = computed(() => `${greeting()}!`);
     margin-top: 20px;
 }
 
-.container-welcome {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin-top: -200px;
-}
 
 </style>

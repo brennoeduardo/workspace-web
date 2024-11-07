@@ -4,6 +4,10 @@ export class UserApi {
         return await get('user', options);
     }
 
+    async findOne(id: number): Promise<any> {
+        return await get(`user/${id}`);
+    }
+
     async create(data: any): Promise<any> {
         return await post('user', data);
     }

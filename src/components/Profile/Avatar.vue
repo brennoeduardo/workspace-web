@@ -10,6 +10,7 @@
         <v-card-title class="text-h6 font-weight-medium text-center">
             Alterar Avatar
         </v-card-title>
+
         <v-card-subtitle class="text-body-2 text-center mb-3">
             Selecione uma imagem para atualizar seu avatar.
         </v-card-subtitle>
@@ -27,25 +28,41 @@
             />
         </v-col>
 
+        <!-- TODO - Criar função para redimensionar imagem -->
+
+        <v-row v-if="imageUrl">
+            <v-col cols="12" class="d-flex justify-center align-center">
+                <v-avatar :image="imageUrl" size="250" />
+            </v-col>
+        </v-row>
+
     </base-components-modal>
 </template>
 
 <script lang="ts" setup>
+
 import { UserAPI } from '~/server/User/user';
 
 interface UserAvatarProps {
     modelValue: boolean;
 }
 
+// DEFINE
+
 const emit = defineEmits(['update:image']);
-
 const props = defineProps<UserAvatarProps>();
-
 const showValue = defineModel<boolean>({ default: false });
+
+// TOAST
 
 const { $toast } = useNuxtApp();
 
+// REFS
+
 const image = ref<File | null>(null);
+const imageUrl = ref<string>('');
+
+// COMPUTED
 
 const actions = computed(() => [
     {
@@ -63,6 +80,8 @@ const actions = computed(() => [
         tooltip: 'Salvar'
     },
 ]);
+
+// METHODS
 
 const save = async () => {
     try {
@@ -84,6 +103,39 @@ const save = async () => {
         $toast.error('Erro ao salvar avatar');
     }
 };
+
+const reset = () => {
+    image.value = null;
+    imageUrl.value = '';
+};
+
+// WATCHERS
+
+watch(image, (newImage) => {
+
+    const allowedFiles = ['image/jpeg', 'image/png', 'image/jpg'];
+
+    if(newImage && !allowedFiles.includes(newImage.type)) {
+        imageUrl.value = '';
+        image.value = null;
+        return $toast.error('Formato de imagem inválido');
+    }
+
+    if (!newImage) return imageUrl.value = ''
+
+    const reader = new FileReader();
+
+    reader.onerror = (e) => $toast.error(`Erro ao carregar imagem: ${e}`);
+    reader.onload = (e) => imageUrl.value = e.target?.result as string;
+
+    reader.readAsDataURL(newImage);
+    
+}, { immediate: true });
+
+watch(() => props.modelValue, (value) => {
+    if(!value) reset()
+}, { immediate: true });
+
 </script>
 
 <style scoped>

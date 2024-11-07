@@ -1,6 +1,7 @@
 <template>
     <v-card>
         <v-layout>
+
             <v-navigation-drawer 
                 v-model="drawer" 
                 :rail="rail" 
@@ -15,7 +16,7 @@
                 <div class="avatar-container">
 
                     <v-avatar 
-                        :image="user.image" 
+                        :image="user.avatar" 
                         :size="avatarSize" 
                         :class="avatarClass" 
                     />
@@ -31,6 +32,7 @@
                 </div>
 
                 <v-card class="px-5 pb-3 mt-2" @click="toggleDetails" v-if="!rail" dark>
+
                     <v-row class="user-info">
                         <v-col>
                             <p class="user-name">{{ user.name }}</p>
@@ -39,6 +41,7 @@
                             <v-icon size="14" v-else>mdi-chevron-up</v-icon>
                         </v-col>
                     </v-row>
+
                     <v-expand-transition>
                         <v-row v-if="showDetails" class="user-info">
                             <v-col>
@@ -59,8 +62,8 @@
                     
                 </v-card>
 
-                <profile-info v-model="showModal.infoUser" v-model:user="user" />
-                <profile-avatar v-model="showModal.avatarUser" @update:image="updateAvatar" />
+                <lazy-profile-info v-model="showModal.infoUser" v-model:user_id="user.id!" />
+                <lazy-profile-avatar v-model="showModal.avatarUser" @update:image="findAvatar" />
 
                 <v-divider />
 
@@ -77,22 +80,24 @@
 
 <script lang="ts" setup>
 
+const { authenticatedUser } = useUserAuth();
+
+const auth = await authenticatedUser();
+
 import { useTheme } from 'vuetify';
+
 import { AuthAPI } from '~/server/User/auth';
 import { UserAPI } from '~/server/User/user';
 
+const theme = useTheme();
+
 const rail = ref(true);
 const drawer = ref(true);
-const theme = useTheme();
 const showDetails = ref(false);
 
 const router = useRouter();
 
-const user = ref({
-    name: 'Brenno Eduardo',
-    email: 'brennobesc@gmail.com',
-    image: '',
-});
+const user = ref<IUser>({});
 
 const showModal = ref({
     infoUser: false,
@@ -137,20 +142,26 @@ const handleMouseLeave = () => {rail.value = true; showDetails.value = false};
 
 const toggleTheme = () => theme.global.name.value = theme.global.current.value.dark ? 'light' : 'dark';
 
-const updateAvatar = async (url: string | null = null) => {
+const findAvatar = async (): Promise<void> => {
+    try {
 
-    if (!url) {
-        const { data } = await UserAPI.getAvatar(11);
-        user.value.image = data;
+        const { success, data } = await UserAPI.getAvatar(user.value.id!);
+
+        if (!success) throw new Error('Erro ao buscar avatar');
+
+        user.value.avatar = data || 'avatar-not-found.jpg';
+
+    } catch (error) {
+        console.error(error);
+        user.value.avatar = 'avatar-not-found.jpg'; 
     }
-
-    else user.value.image = url;
 };
 
-
 onBeforeMount(async () => {
-    await updateAvatar();
+    await findAvatar();
+    if(auth) user.value = auth.user
 });
+
 </script>
 
 <style scoped>

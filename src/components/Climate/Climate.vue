@@ -31,22 +31,32 @@
             </div>
 
             <v-menu
+                v-model="menu"
                 activator="parent"
                 width="30%"
+                location="left"
                 :close-on-content-click="false"
             >
+
                 <template v-slot:activator="{ isActive }">
                     <v-btn v-on="isActive" icon="mdi-magnify" variant="text" size="small" />
                 </template>
 
                     <v-text-field
                         v-model="city"
-                        placeholder="Buscar cidade"
                         variant="outlined"
+                        placeholder="Buscar cidade"
                         append-inner-icon="mdi-refresh"
-                        @click:append-inner="findTemperature(city)"
-                    />
+                        @keyup.enter="findTemperature(city);"
+                        @click:append-inner="findTemperature(city);"
+                    >
+
+                    </v-text-field>
+
             </v-menu>
+
+            <v-tooltip text="Buscar outra região" activator="parent" location="top" />
+
         </v-card-actions>
     </v-card>
 </template>
@@ -55,6 +65,8 @@
 import { getTemperature } from '~/server/Climate';
 import type { WeatherData } from '~/server/Climate/interface';
 
+const { $toast } = useNuxtApp();
+
 const weatherData = ref<WeatherData>({
     name: '',
     weather: [{ description: '', icon: '', main: '' }],
@@ -62,13 +74,21 @@ const weatherData = ref<WeatherData>({
 });
 
 const city = ref<string>('');
+const menu = ref<boolean>(false);
 
 const formatString = (str: string) => {
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-const findTemperature = async (city: string) => {
-    weatherData.value = await getTemperature(city);
+const findTemperature = async (region: string) => {
+
+    if(!region || region === '') return $toast.warn("Digite o nome de uma cidade");
+
+    weatherData.value = await getTemperature(region);
+
+    menu.value = false;
+    city.value = '';
+
 }
 
 onMounted(async () => {
@@ -85,9 +105,10 @@ onMounted(async () => {
 }
 
 .card-container {
-    margin-top: 10px;
-    margin-left: 60px;
-    padding: 0;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+
     background-color: #f5f5f5;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);

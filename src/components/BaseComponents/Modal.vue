@@ -35,13 +35,6 @@
 
 <script lang="ts" setup>
 
-interface Actions {
-    text: string
-    icon: string
-    click: () => void
-    color: string
-}
-
 interface ModalProps {
     modelValue: boolean
     width?: string
